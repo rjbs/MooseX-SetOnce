@@ -37,7 +37,7 @@ If the attribute has a clearer, you may clear the attribute and set it again.
 =cut
 
 package MooseX::Attribute::Trait::Worm;
-use Moose::Role;
+use Moose::Role 0.90;
 
 before set_value => sub { $_[0]->_ensure_unset($_[1]) };
 
@@ -58,7 +58,7 @@ around accessor_metaclass => sub {
 };
 
 package MooseX::Worm::Accessor;
-use Moose::Role;
+use Moose::Role 0.90;
 
 around _inline_store => sub {
   my ($orig, $self, $instance, $value) = @_;
@@ -77,4 +77,3 @@ package Moose::Meta::Attribute::Custom::Trait::Worm;
 sub register_implementation { 'MooseX::Attribute::Trait::Worm' }
 
 1;
-
