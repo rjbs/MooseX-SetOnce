@@ -36,7 +36,7 @@ If the attribute has a clearer, you may clear the attribute and set it again.
 
 =cut
 
-package MooseX::Attribute::Trait::SetOnce;
+package MooseX::SetOnce::Attribute;
 use Moose::Role 0.90;
 
 before set_value => sub { $_[0]->_ensure_unset($_[1]) };
@@ -74,6 +74,6 @@ around _inline_store => sub {
 };
 
 package Moose::Meta::Attribute::Custom::Trait::SetOnce;
-sub register_implementation { 'MooseX::Attribute::Trait::SetOnce' }
+sub register_implementation { 'MooseX::SetOnce::Attribute' }
 
 1;
