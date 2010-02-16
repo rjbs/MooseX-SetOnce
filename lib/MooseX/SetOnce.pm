@@ -1,19 +1,19 @@
 use strict;
 use warnings;
-package MooseX::Worm;
+package MooseX::SetOnce;
 # ABSTRACT: write-once, read-many attributes for Moose
 
 =head1 SYNOPSIS
 
-Add the "Worm" trait to attributes:
+Add the "SetOnce" trait to attributes:
 
   package Class;
   use Moose;
-  use MooseX::Worm;
+  use MooseX::SetOnce;
 
   has some_attr => (
     is     => 'rw',
-    traits => [ qw(Worm) ],
+    traits => [ qw(SetOnce) ],
   );
 
 ...and then you can only set them once:
@@ -25,25 +25,25 @@ Add the "Worm" trait to attributes:
 
 =head1 DESCRIPTION
 
-The 'Worm' attribute lets your class have attributes that are not lazy and not
-set, but that cannot be altered once set.
+The 'SetOnce' attribute lets your class have attributes that are not lazy and
+not set, but that cannot be altered once set.
 
 The logic is very simple:  if you try to alter the value of an attribute with
-the Worm trait, either by accessor or writer, and the attribute has a value, it
-will throw an exception.
+the SetOnce trait, either by accessor or writer, and the attribute has a value,
+it will throw an exception.
 
 If the attribute has a clearer, you may clear the attribute and set it again.
 
 =cut
 
-package MooseX::Attribute::Trait::Worm;
+package MooseX::Attribute::Trait::SetOnce;
 use Moose::Role 0.90;
 
 before set_value => sub { $_[0]->_ensure_unset($_[1]) };
 
 sub _ensure_unset {
   my ($self, $instance) = @_;
-  Carp::confess("cannot change value of Worm attribute")
+  Carp::confess("cannot change value of SetOnce attribute")
     if $self->has_value($instance);
 }
 
@@ -52,12 +52,12 @@ around accessor_metaclass => sub {
 
   return Moose::Meta::Class->create_anon_class(
     superclasses => [ $self->$orig(@_) ],
-    roles => [ 'MooseX::Worm::Accessor' ],
+    roles => [ 'MooseX::SetOnce::Accessor' ],
     cache => 1
   )->name
 };
 
-package MooseX::Worm::Accessor;
+package MooseX::SetOnce::Accessor;
 use Moose::Role 0.90;
 
 around _inline_store => sub {
@@ -73,7 +73,7 @@ around _inline_store => sub {
   return $code;
 };
 
-package Moose::Meta::Attribute::Custom::Trait::Worm;
-sub register_implementation { 'MooseX::Attribute::Trait::Worm' }
+package Moose::Meta::Attribute::Custom::Trait::SetOnce;
+sub register_implementation { 'MooseX::Attribute::Trait::SetOnce' }
 
 1;

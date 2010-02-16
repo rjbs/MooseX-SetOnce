@@ -4,7 +4,7 @@ use Test::More;
 use Try::Tiny;
 
 use lib 'lib';
-require MooseX::Worm;
+require MooseX::SetOnce;
 
 {
   package Apple;
@@ -12,7 +12,7 @@ require MooseX::Worm;
 
   has color => (
     is     => 'rw',
-    traits => [ qw(WORM) ],
+    traits => [ qw(SetOnce) ],
   );
 }
 
@@ -23,7 +23,7 @@ require MooseX::Worm;
   has color => (
     reader => 'get_color',
     writer => 'set_color',
-    traits => [ qw(WORM) ],
+    traits => [ qw(SetOnce) ],
   );
 }
 
@@ -44,7 +44,7 @@ for my $set (
       return 1;
     };
 
-    ok( ! $died, "can set a WORM attr once") or diag $error;
+    ok( ! $died, "can set a SetOnce attr once") or diag $error;
     is($object->$getter, 'green', "it has the first value we set");
   }
 
@@ -58,7 +58,7 @@ for my $set (
       return 1;
     };
 
-    ok( $died, "can't set a WORM attr twice (via $setter)");
+    ok( $died, "can't set a SetOnce attr twice (via $setter)");
     is($object->$getter, 'green', "it has the first value we set");
   }
 
@@ -72,7 +72,7 @@ for my $set (
       return 1;
     };
 
-    ok( $died, "can't set a WORM attr twice (via set_value)");
+    ok( $died, "can't set a SetOnce attr twice (via set_value)");
     is($object->$getter, 'green', "it has the first value we set");
   }
 }
