@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.100472  2010-11-03 16:14:19 America/New_York
           include attribute name in error message
 
 0.100471  2010-02-16 13:30:57 America/New_York
