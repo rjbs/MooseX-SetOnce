@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+          include attribute name in error message
 
 0.100471  2010-02-16 13:30:57 America/New_York
           correct dist name (oops!  thanks for noticing, mst)

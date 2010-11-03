@@ -43,7 +43,7 @@ before set_value => sub { $_[0]->_ensure_unset($_[1]) };
 
 sub _ensure_unset {
   my ($self, $instance) = @_;
-  Carp::confess("cannot change value of SetOnce attribute")
+  Carp::confess("cannot change value of SetOnce attribute " . $self->name)
     if $self->has_value($instance);
 }
 

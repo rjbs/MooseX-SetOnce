@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 use Test::More;
-use Try::Tiny;
+use Test::Fatal;
 
 use lib 'lib';
 require MooseX::SetOnce;
@@ -35,44 +35,32 @@ for my $set (
   my $object = $class->new;
 
   {
-    my $error;
-    my $died = try {
-      $object->$setter('green');
-      return;
-    } catch {
-      $error = $_;
-      return 1;
-    };
+    is(
+      exception { $object->$setter('green'); },
+      undef,
+      "can set a SetOnce attr once",
+    );
 
-    ok( ! $died, "can set a SetOnce attr once") or diag $error;
     is($object->$getter, 'green', "it has the first value we set");
   }
 
   {
-    my $error;
-    my $died = try {
-      $object->$setter('blue');
-      return;
-    } catch {
-      $error = $_;
-      return 1;
-    };
-
-    ok( $died, "can't set a SetOnce attr twice (via $setter)");
+    like(
+      exception { $object->$setter('blue'); },
+      qr{cannot change value.+\bcolor\b},
+      "can't set a SetOnce attr twice (via $setter)",
+    );
     is($object->$getter, 'green', "it has the first value we set");
   }
 
   {
-    my $error;
-    my $died = try {
-      $object->meta->get_attribute('color')->set_value($object, 'yellow');
-      return;
-    } catch {
-      $error = $_;
-      return 1;
-    };
-
-    ok( $died, "can't set a SetOnce attr twice (via set_value)");
+    like(
+      exception {
+        $object->meta->get_attribute('color')->set_value($object, 'yellow');
+      },
+      qr{cannot change value.+\bcolor\b},
+      "can't set a SetOnce attr twice (via set_value)",
+    );
     is($object->$getter, 'green', "it has the first value we set");
   }
 }
