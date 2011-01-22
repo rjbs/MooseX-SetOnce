@@ -47,30 +47,11 @@ sub _ensure_unset {
     if $self->has_value($instance);
 }
 
-around accessor_metaclass => sub {
-  my ($orig, $self, @rest) = @_;
-
-  return Moose::Meta::Class->create_anon_class(
-    superclasses => [ $self->$orig(@_) ],
-    roles => [ 'MooseX::SetOnce::Accessor' ],
-    cache => 1
-  )->name
-};
-
-package MooseX::SetOnce::Accessor;
-use Moose::Role 0.90;
-
-around _inline_store => sub {
-  my ($orig, $self, $instance, $value) = @_;
-
-  my $code = $self->$orig($instance, $value);
-  $code = sprintf qq[%s->meta->get_attribute("%s")->_ensure_unset(%s);\n%s],
-    $instance,
-    quotemeta($self->associated_attribute->name),
-    $instance,
-    $code;
-
-  return $code;
+around _inline_set_value => sub {
+  my ( $orig, $self, @args ) = @_;
+  my (@lines) = $self->$orig(@args);
+  unshift @lines, sprintf q{$_[0]->meta->get_attribute("%s")->_ensure_unset($_[0]);}, quotemeta( $self->name );
+  return @lines;
 };
 
 package Moose::Meta::Attribute::Custom::Trait::SetOnce;
