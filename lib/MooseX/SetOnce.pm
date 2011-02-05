@@ -1,6 +1,10 @@
 use strict;
 use warnings;
 package MooseX::SetOnce;
+
+require Moose;
+Moose->VERSION(1.9);
+
 # ABSTRACT: write-once, read-many attributes for Moose
 
 =head1 SYNOPSIS
