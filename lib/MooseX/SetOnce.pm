@@ -1,10 +1,6 @@
 use strict;
 use warnings;
 package MooseX::SetOnce;
-
-require Moose;
-Moose->VERSION(1.9);
-
 # ABSTRACT: write-once, read-many attributes for Moose
 
 =head1 SYNOPSIS
@@ -45,17 +41,43 @@ use Moose::Role 0.90;
 
 before set_value => sub { $_[0]->_ensure_unset($_[1]) };
 
+around _inline_set_value => sub {
+    my ( $orig, $self, @args ) = @_;
+    my (@lines) = $self->$orig(@args);
+    unshift @lines, sprintf q{$_[0]->meta->get_attribute("%s")->_ensure_unset($_[0]);}, quotemeta( $self->name );
+    return @lines;
+} if $Moose::VERSION >= 1.9900;
+
 sub _ensure_unset {
   my ($self, $instance) = @_;
   Carp::confess("cannot change value of SetOnce attribute " . $self->name)
     if $self->has_value($instance);
 }
 
-around _inline_set_value => sub {
-  my ( $orig, $self, @args ) = @_;
-  my (@lines) = $self->$orig(@args);
-  unshift @lines, sprintf q{$_[0]->meta->get_attribute("%s")->_ensure_unset($_[0]);}, quotemeta( $self->name );
-  return @lines;
+around accessor_metaclass => sub {
+  my ($orig, $self, @rest) = @_;
+
+  return Moose::Meta::Class->create_anon_class(
+    superclasses => [ $self->$orig(@_) ],
+    roles => [ 'MooseX::SetOnce::Accessor' ],
+    cache => 1
+  )->name
+} if $Moose::VERSION < 1.9900;
+
+package MooseX::SetOnce::Accessor;
+use Moose::Role 0.90;
+
+around _inline_store => sub {
+  my ($orig, $self, $instance, $value) = @_;
+
+  my $code = $self->$orig($instance, $value);
+  $code = sprintf qq[%s->meta->get_attribute("%s")->_ensure_unset(%s);\n%s],
+    $instance,
+    quotemeta($self->associated_attribute->name),
+    $instance,
+    $code;
+
+  return $code;
 };
 
 package Moose::Meta::Attribute::Custom::Trait::SetOnce;
