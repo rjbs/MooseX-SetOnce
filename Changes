@@ -2,6 +2,9 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+0.100473  2011-02-27 13:26:52 America/New_York
+          compatibile with Moose 2.x (thanks, APOCAL and Jesse Luehrs!)
+
 0.100472  2010-11-03 16:14:19 America/New_York
           include attribute name in error message
 
