@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+          more Moose 2.x bugfixes and tests (thanks Jesse Luehrs!)
 
 0.100473  2011-02-27 13:26:52 America/New_York
           compatibile with Moose 2.x (thanks, APOCAL and Jesse Luehrs!)
