@@ -42,10 +42,18 @@ use Moose::Role 0.90;
 before set_value => sub { $_[0]->_ensure_unset($_[1]) };
 
 around _inline_set_value => sub {
-    my ( $orig, $self, @args ) = @_;
-    my (@lines) = $self->$orig(@args);
-    unshift @lines, sprintf q{$_[0]->meta->get_attribute("%s")->_ensure_unset($_[0]);}, quotemeta( $self->name );
-    return @lines;
+  my $orig = shift;
+  my $self = shift;
+  my ($instance) = @_;
+
+  my @source = $self->$orig(@_);
+
+  return (
+    'Class::MOP::class_of(' . $instance . ')->get_attribute(',
+      '\'' . quotemeta($self->name) . '\'',
+    ')->_ensure_unset(' . $instance . ');',
+    @source,
+  );
 } if $Moose::VERSION >= 1.9900;
 
 sub _ensure_unset {
