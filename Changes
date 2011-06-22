@@ -1,6 +1,6 @@
 Revision history for {{$dist->name}}
 
-{{$NEXT}}
+{{$NEXT}} SetOnce attributes now work in superclasses (Karen Etheridge)
 
 0.200000  2011-04-06 22:06:48 America/New_York
           more Moose 2.x bugfixes and tests (thanks Jesse Luehrs!)
