@@ -49,7 +49,7 @@ around _inline_set_value => sub {
   my @source = $self->$orig(@_);
 
   return (
-    'Class::MOP::class_of(' . $instance . ')->get_attribute(',
+    'Class::MOP::class_of(' . $instance . ')->find_attribute_by_name(',
       '\'' . quotemeta($self->name) . '\'',
     ')->_ensure_unset(' . $instance . ');',
     @source,
@@ -79,7 +79,7 @@ around _inline_store => sub {
   my ($orig, $self, $instance, $value) = @_;
 
   my $code = $self->$orig($instance, $value);
-  $code = sprintf qq[%s->meta->get_attribute("%s")->_ensure_unset(%s);\n%s],
+  $code = sprintf qq[%s->meta->find_attribute_by_name("%s")->_ensure_unset(%s);\n%s],
     $instance,
     quotemeta($self->associated_attribute->name),
     $instance,

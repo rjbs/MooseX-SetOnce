@@ -28,10 +28,18 @@ require MooseX::SetOnce;
   );
 }
 
+{
+  package Tangerine;
+  use Moose;
+
+  extends 'Orange';
+}
+
 with_immutable {
 for my $set (
-  [ Apple   => qw(    color     color) ],
-  [ Orange  => qw(get_color set_color) ],
+  [ Apple     => qw(    color     color) ],
+  [ Orange    => qw(get_color set_color) ],
+  [ Tangerine => qw(get_color set_color) ],
 ) {
   my ($class, $getter, $setter) = @$set;
   my $object = $class->new;
@@ -58,7 +66,7 @@ for my $set (
   {
     like(
       exception {
-        $object->meta->get_attribute('color')->set_value($object, 'yellow');
+        $object->meta->find_attribute_by_name('color')->set_value($object, 'yellow');
       },
       qr{cannot change value.+\bcolor\b},
       "can't set a SetOnce attr twice (via set_value)",
@@ -80,7 +88,7 @@ for my $set (
   {
     like(
       exception {
-        $object2->meta->get_attribute('color')->set_value($object, 'yellow');
+        $object2->meta->find_attribute_by_name('color')->set_value($object, 'yellow');
       },
       qr{cannot change value.+\bcolor\b},
       "can't set a SetOnce attr twice (via set_value)",
