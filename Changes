@@ -1,7 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
-          SetOnce attributes now work in superclasses (Karen Etheridge)
+          add a test for the bugfix in 0.200001 (thanks, Karen Etheridge)
 
 0.200001  2011-10-06 19:04:51 America/New_York
           bugfixes for accessors in subclasses (thanks, Karen Etheridge and
