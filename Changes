@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+        - declare required perl version
+        - update author email contact info (again)
 
 0.201     2021-06-18 20:54:02-04:00 America/New_York
           update author email contact info
