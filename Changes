@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.202     2022-12-31 17:07:01-05:00 America/New_York
         - declare required perl version
         - update author email contact info (again)
 
